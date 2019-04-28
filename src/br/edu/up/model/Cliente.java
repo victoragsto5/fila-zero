@@ -1,7 +1,8 @@
 package br.edu.up.model;
 
 public class Cliente {
-	
+
+	private Integer id;
 	private String nome;
 	private String rg;
 	private String cpf;
@@ -9,6 +10,17 @@ public class Cliente {
 	private String telefone;
 	private String login;
 	private String senha;
+	
+	public Cliente(String nome, String rg, String cpf, String endereco, String telefone, String login, String senha) {
+		super();
+		this.nome = nome;
+		this.rg = rg;
+		this.cpf = cpf;
+		this.endereco = endereco;
+		this.telefone = telefone;
+		this.login = login;
+		this.senha = senha;
+	}
 	
 	public String getNome() {
 		return nome;
@@ -64,6 +76,14 @@ public class Cliente {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }
