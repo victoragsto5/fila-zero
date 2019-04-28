@@ -2,7 +2,6 @@ package br.edu.up.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import br.edu.up.model.Cliente;
 import br.edu.up.swing.Mensagem;
 

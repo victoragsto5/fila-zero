@@ -27,10 +27,13 @@ public class PracaAlimentacaoController {
 
 		switch (opcaoSelecionada) {
 		case "1":
-			this.menuLogin();
+			this.menuCliente();
 			break;
 		case "2":
-			this.menuCliente();
+			this.menuRestaurante();
+			break;
+		case "3":
+			this.menuAdministrador();
 			break;
 		default:
 			MenuController.exibeMensagem(Mensagem.ERRO_OPCAO_INVALIDA, Titulo.PRINCIPAL, JOptionPane.ERROR_MESSAGE);
@@ -40,7 +43,32 @@ public class PracaAlimentacaoController {
 
 	}
 
-	private void menuLogin() {
+	/**
+	 * ######################################################################
+	 * # CLIENTE
+	 * ######################################################################
+	 */
+	private void menuCliente() {
+
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_CLIENTE, Titulo.CLIENTE);
+
+		switch (opcaoEscolhida) {
+		case "1":
+			this.menuLoginCliente();
+			break;
+		case "2":
+			this.menuNovoCliente();
+			break;
+		case "3":
+			this.menuAlterarCliente();
+			break;
+		default:
+			this.menuCliente();
+			break;
+		}
+	}
+	
+	private void menuLoginCliente() {
 
 		String login = MenuController.entradaDados("Login", Titulo.LOGIN);
 		String senha = MenuController.entradaDados("Senha:", Titulo.LOGIN);
@@ -48,27 +76,10 @@ public class PracaAlimentacaoController {
 		Cliente clienteLogado = this.clienteController.buscarPorLoginSenha(login, senha);
 
 		if (clienteLogado != null) {
-			this.menuPedido(clienteLogado);
+			this.menuPedidoCliente(clienteLogado);
 		} else {
 			MenuController.exibeMensagemErro(Mensagem.ERRO_LOGIN_CLIENTE, Titulo.LOGIN);
 			this.menuInicial();
-		}
-	}
-
-	private void menuCliente() {
-
-		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_CLIENTE, Titulo.CLIENTE);
-
-		switch (opcaoEscolhida) {
-		case "1":
-			this.menuNovoCliente();
-			break;
-		case "2":
-			this.menuAlterarCliente();
-			break;
-		default:
-			this.menuCliente();
-			break;
 		}
 	}
 	
@@ -117,19 +128,70 @@ public class PracaAlimentacaoController {
 		}
 	}
 
-	private void menuPedido(Cliente cliente) {
+	/**
+	 * ######################################################################
+	 * # PEDIDO
+	 * ######################################################################
+	 */
+	private void menuPedidoCliente(Cliente cliente) {
 
 		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_PEDIDO, Titulo.PEDIDO);
 
 		switch (opcaoEscolhida) {
 		case "1":
-			this.restauranteController.cadastrarPedido();
+			this.menuNovoPedido();
 			break;
 		case "2":
-			this.restauranteController.duplicarPedido();
+			this.menuDuplicarPedido();
 			break;
 		default:
-			this.menuPedido(cliente);
+			this.menuPedidoCliente(cliente);
+			break;
+		}
+	}
+	
+	private void menuNovoPedido() {
+		
+	}
+	
+	private void menuDuplicarPedido() {
+		
+	}
+	
+	/**
+	 * ######################################################################
+	 * # RESTAURANTE
+	 * ######################################################################
+	 */
+	private void menuRestaurante() {
+		
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_RESTAURANTE, Titulo.RESTAURANTE);
+		
+		switch (opcaoEscolhida) {
+		case "1":
+			Mensagem.mensagemLog("EXIBIR MENU RESTAURANTE");
+			break;
+		default:
+			this.menuRestaurante();
+			break;
+		}
+	}
+	
+	/**
+	 * ######################################################################
+	 * # ADMINISTRADOR
+	 * ######################################################################
+	 */
+	private void menuAdministrador() {
+		
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_ADMINISTRADOR, Titulo.ADMINISTRADOR);
+		
+		switch (opcaoEscolhida) {
+		case "1":
+			Mensagem.mensagemLog("EXIBIR MENU ADMINISTRADOR");
+			break;
+		default:
+			this.menuAdministrador();
 			break;
 		}
 	}

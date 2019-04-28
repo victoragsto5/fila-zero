@@ -35,7 +35,7 @@ public class MenuController {
 
 	private static String getOpcoesStr(String[] opcoes) {
 
-		String opcoesStr = null;
+		String opcoesStr = "";
 
 		for (String opcao : opcoes) {
 			opcoesStr = opcoesStr + opcao + "\n";
