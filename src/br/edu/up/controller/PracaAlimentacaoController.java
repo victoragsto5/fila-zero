@@ -151,9 +151,6 @@ public class PracaAlimentacaoController {
 			this.menuPedidoRestaurante(cliente);
 			break;
 		case "2":
-			this.menuDuplicarPedido(cliente);
-			break;
-		case "3":
 			this.menuAlterarCliente(cliente);
 			break;
 		default:
