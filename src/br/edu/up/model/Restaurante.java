@@ -1,5 +1,6 @@
 package br.edu.up.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Restaurante {
@@ -8,6 +9,10 @@ public class Restaurante {
 	private String nome;
 	private List<Produto> cardapio;
 	private List<Pedido> pedidos;
+	
+	public Restaurante() {
+		this.pedidos = new ArrayList<Pedido>();
+	}
 
 	public List<Pedido> getPedidos() {
 		return pedidos;

@@ -46,11 +46,11 @@ public class Cliente {
 		this.cpf = cpf;
 	}
 
-	public String getEndereço() {
+	public String getEndereco() {
 		return endereco;
 	}
 
-	public void setEndereço(String endereco) {
+	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
 

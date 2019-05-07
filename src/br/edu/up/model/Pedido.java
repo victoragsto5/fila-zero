@@ -1,5 +1,7 @@
 package br.edu.up.model;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Pedido {
@@ -8,6 +10,12 @@ public class Pedido {
 	private Cliente cliente;
 	private Restaurante restaurante;
 	private List<Produto> produtos;
+	private Date dataPedido;
+	private Double valorTotal;
+	
+	public Pedido() {
+		this.produtos = new ArrayList<Produto>();
+	}
 
 	public Integer getCodigo() {
 		return codigo;
@@ -39,6 +47,22 @@ public class Pedido {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
+	}
+
+	public Date getDataPedido() {
+		return dataPedido;
+	}
+
+	public void setDataPedido(Date dataPedido) {
+		this.dataPedido = dataPedido;
+	}
+
+	public Double getValorTotal() {
+		return valorTotal;
+	}
+
+	public void setValorTotal(Double valorTotal) {
+		this.valorTotal = valorTotal;
 	}
 
 }

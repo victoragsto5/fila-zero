@@ -2,6 +2,7 @@ package br.edu.up.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import br.edu.up.model.Cliente;
 import br.edu.up.swing.Mensagem;
 
@@ -11,18 +12,17 @@ public class ClienteController {
 	
 	public ClienteController() {
 		this.clientesCadastrados = new ArrayList<Cliente>();
+		this.initializeClientes();
 	}
 	
 	public void cadastrar(Cliente cliente) {
-		if(cliente.getId() != null) {
+		if(cliente.getId() == null) {
 			Mensagem.mensagemLog("CADASTRAR CLIENTE");
-			
-			Integer idCliente = this.clientesCadastrados.size();
+			Integer idCliente = this.clientesCadastrados.size() + 1;
 			cliente.setId(idCliente);
 			this.clientesCadastrados.add(cliente);
 		} else {
 			Mensagem.mensagemLog("ALTERAR CLIENTE");
-			
 			Integer indice = cliente.getId() - 1;
 			this.clientesCadastrados.set(indice, cliente);
 		}
@@ -30,6 +30,11 @@ public class ClienteController {
 	}
 	
 	public Cliente buscarPorLoginSenha(String login, String senha) {
+		
+		if(this.clientesCadastrados.size() < 1) {
+			return null;
+		}
+		
 		for(Cliente cliente : this.clientesCadastrados) {
 			if(cliente.getLogin().equals(login) && cliente.getSenha().equals(senha)) {
 				return cliente;
@@ -45,6 +50,20 @@ public class ClienteController {
 			}
 		}
 		return null;
+	}
+	
+	private void initializeClientes() {
+		String nome = "Victor Auguto de Paula";
+		String rg = "10.264.193.0";
+		String cpf = "101.264.193-02";
+		String endereco = "Rua Teste 1100";
+		String telefone = "(41)7777-8888";
+		String login = "cloud";
+		String senha = "123";
+		
+		Cliente cliente = new Cliente(nome, rg, cpf, endereco, telefone, login, senha);
+		
+		this.clientesCadastrados.add(cliente);
 	}
 	
 }

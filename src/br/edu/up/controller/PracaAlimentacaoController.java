@@ -1,8 +1,13 @@
 package br.edu.up.controller;
 
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 
 import br.edu.up.model.Cliente;
+import br.edu.up.model.Pedido;
+import br.edu.up.model.Produto;
+import br.edu.up.model.Restaurante;
 import br.edu.up.swing.Mensagem;
 import br.edu.up.swing.Opcoes;
 import br.edu.up.swing.Titulo;
@@ -11,10 +16,12 @@ public class PracaAlimentacaoController {
 
 	private RestauranteController restauranteController;
 	private ClienteController clienteController;
+	private FormaPagamentoController formaPagamentoController ;
 
 	public PracaAlimentacaoController() {
 		this.clienteController = new ClienteController();
 		this.restauranteController = new RestauranteController();
+		this.formaPagamentoController = new FormaPagamentoController();
 	}
 
 	public void iniciarSistema() {
@@ -27,7 +34,7 @@ public class PracaAlimentacaoController {
 
 		switch (opcaoSelecionada) {
 		case "1":
-			this.menuCliente();
+			this.menuInicialCliente();
 			break;
 		case "2":
 			this.menuRestaurante();
@@ -48,9 +55,9 @@ public class PracaAlimentacaoController {
 	 * # CLIENTE
 	 * ######################################################################
 	 */
-	private void menuCliente() {
+	private void menuInicialCliente() {
 
-		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_CLIENTE, Titulo.CLIENTE);
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_INICIAL_CLIENTE, Titulo.CLIENTE);
 
 		switch (opcaoEscolhida) {
 		case "1":
@@ -59,11 +66,8 @@ public class PracaAlimentacaoController {
 		case "2":
 			this.menuNovoCliente();
 			break;
-		case "3":
-			this.menuAlterarCliente();
-			break;
 		default:
-			this.menuCliente();
+			this.menuInicialCliente();
 			break;
 		}
 	}
@@ -76,7 +80,7 @@ public class PracaAlimentacaoController {
 		Cliente clienteLogado = this.clienteController.buscarPorLoginSenha(login, senha);
 
 		if (clienteLogado != null) {
-			this.menuPedidoCliente(clienteLogado);
+			this.menuClienteLogado(clienteLogado);
 		} else {
 			MenuController.exibeMensagemErro(Mensagem.ERRO_LOGIN_CLIENTE, Titulo.LOGIN);
 			this.menuInicial();
@@ -97,34 +101,38 @@ public class PracaAlimentacaoController {
 		if(clienteCadastrado == null) {
 			Cliente cliente = new Cliente(nome, rg, cpf, endereco, telefone, login, senha);
 			this.clienteController.cadastrar(cliente);
+			this.menuInicialCliente();
 		} else {
+			MenuController.exibeMensagemErro("Login já cadastrado", Titulo.CLIENTE);
 			this.menuNovoCliente();
 		}
 	
 	}
 	
-	private void menuAlterarCliente() {
-		String login = MenuController.entradaDados("Buscar por Login:", Titulo.CLIENTE);
-		Cliente clienteAlterar = this.clienteController.buscarPorLogin(login);
+	private void menuAlterarCliente(Cliente cliente) {
+		
+		String tituloClienteLogado = Titulo.CLIENTE + ": " + cliente.getNome();
+		Cliente clienteAlterar = this.clienteController.buscarPorLogin(cliente.getLogin());
 		
 		if(clienteAlterar != null) {
-			String nome = MenuController.entradaDados("Informe o Nome:", Titulo.CLIENTE);
-			String rg = MenuController.entradaDados("Informe o Número Identidade:", Titulo.CLIENTE);
-			String cpf = MenuController.entradaDados("Informe o CPF:", Titulo.CLIENTE);
-			String endereco = MenuController.entradaDados("Informe um Endereço:", Titulo.CLIENTE);
-			String telefone = MenuController.entradaDados("Informe um Telefone:", Titulo.CLIENTE);
+			String nome = MenuController.entradaDadosPreenchidos("Informe o Nome:", tituloClienteLogado, clienteAlterar.getNome());
+			String rg = MenuController.entradaDadosPreenchidos("Informe o Número Identidade:", tituloClienteLogado, clienteAlterar.getRg());
+			String cpf = MenuController.entradaDadosPreenchidos("Informe o CPF:", tituloClienteLogado, clienteAlterar.getCpf());
+			String endereco = MenuController.entradaDadosPreenchidos("Informe um Endereço:", tituloClienteLogado, clienteAlterar.getEndereco());
+			String telefone = MenuController.entradaDadosPreenchidos("Informe um Telefone:", tituloClienteLogado, clienteAlterar.getTelefone());
 			
 			clienteAlterar.setNome(nome);
 			clienteAlterar.setRg(rg);
 			clienteAlterar.setCpf(cpf);
-			clienteAlterar.setEndereço(endereco);
+			clienteAlterar.setEndereco(endereco);
 			clienteAlterar.setTelefone(telefone);
 			
 			this.clienteController.cadastrar(clienteAlterar);
-			this.menuCliente();
+			this.menuClienteLogado(clienteAlterar);
 			
 		} else {
-			MenuController.exibeMensagemErro(Mensagem.ERRO_LOGIN_CLIENTE, Titulo.CLIENTE);
+			MenuController.exibeMensagemErro(Mensagem.ERRO_ALTERAR_CLIENTE, Titulo.CLIENTE);
+			this.menuInicialCliente();
 		}
 	}
 
@@ -133,48 +141,112 @@ public class PracaAlimentacaoController {
 	 * # PEDIDO
 	 * ######################################################################
 	 */
-	private void menuPedidoCliente(Cliente cliente) {
+	private void menuClienteLogado(Cliente cliente) {
 
-		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_PEDIDO, Titulo.PEDIDO);
+		String tituloClienteLogado = Titulo.CLIENTE + ": " + cliente.getNome();
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_CLIENTE, tituloClienteLogado);
 
 		switch (opcaoEscolhida) {
 		case "1":
-			this.menuNovoPedido();
+			this.menuPedidoRestaurante(cliente);
 			break;
 		case "2":
-			this.menuDuplicarPedido();
+			this.menuDuplicarPedido(cliente);
+			break;
+		case "3":
+			this.menuAlterarCliente(cliente);
 			break;
 		default:
-			this.menuPedidoCliente(cliente);
+			this.menuClienteLogado(cliente);
 			break;
 		}
 	}
-	
-	private void menuNovoPedido() {
+
+	private void menuPedidoRestaurante(Cliente cliente) {
+		
+		String tituloClienteLogado = Titulo.CLIENTE + ": " + cliente.getNome();
+		String[] opcoes = restauranteController.getOpcoesRestaurante();
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(opcoes, tituloClienteLogado);
+		
+		Restaurante restaurante = this.restauranteController.buscaRestaurantePorCodigo(opcaoEscolhida);
+		
+		if(restaurante != null) {
+			Pedido pedido = new Pedido();
+			pedido.setCliente(cliente);
+			pedido.setRestaurante(restaurante);
+			this.menuCardapio(pedido);
+		} else {
+			MenuController.exibeMensagemErro(Mensagem.ERRO_BUSCAR_RESTAURANTE, tituloClienteLogado);
+			this.menuPedidoRestaurante(cliente);
+		} 
 		
 	}
 	
-	private void menuDuplicarPedido() {
+	private void menuCardapio(Pedido pedido) {
 		
+		Cliente cliente = pedido.getCliente();
+		Restaurante restaurante = pedido.getRestaurante();
+		
+		String tituloClienteLogado = Titulo.CLIENTE + ": " + cliente.getNome();
+		String[] opcoes = restauranteController.getOpcoesCardapio(restaurante);
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(opcoes, tituloClienteLogado);
+		
+		if(opcaoEscolhida.equals("0")) {
+			this.menuFormaPagamento(pedido);
+		}
+		
+		Produto produto = this.restauranteController.buscaNoCardapio(restaurante, opcaoEscolhida);
+		
+		if(produto != null) {
+			
+			String mensagemQuantidadeProduto = "Informe a quantidade de " + produto.getDescricao() + " :";
+			String quantidadeInformada = MenuController.entradaDados(mensagemQuantidadeProduto, tituloClienteLogado);
+			
+			Integer quantidade = Integer.valueOf(quantidadeInformada);
+			
+			for(int i = 0; i < quantidade; i++) {
+				pedido.getProdutos().add(produto);
+			}
+			
+			this.menuCardapio(pedido);
+		} else {
+			MenuController.exibeMensagemErro(Mensagem.ERRO_BUSCAR_CARDAPIO, tituloClienteLogado);
+			this.menuCardapio(pedido);
+		} 
 	}
 	
-	/**
-	 * ######################################################################
-	 * # RESTAURANTE
-	 * ######################################################################
-	 */
-	private void menuRestaurante() {
+	private void menuFormaPagamento(Pedido pedido) {
 		
-		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_RESTAURANTE, Titulo.RESTAURANTE);
+		PedidoController.calculaTotalPedido(pedido);
+		
+		String tituloClienteLogado = Titulo.CLIENTE + ": " + pedido.getCliente().getNome();
+		String[] opcoes = formaPagamentoController.getOpcoesPagamento(pedido);
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(opcoes, tituloClienteLogado);
 		
 		switch (opcaoEscolhida) {
-		case "1":
-			Mensagem.mensagemLog("EXIBIR MENU RESTAURANTE");
+		case "1":			
+			this.restauranteController.receberPedido(pedido);
+			MenuController.exibeMensagemInformacao(Mensagem.SUCESSO_PEDIDO, tituloClienteLogado);			
+			this.menuInicial();
+			break;
+		case "2":
+			this.restauranteController.receberPedido(pedido);
+			MenuController.exibeMensagemInformacao(Mensagem.SUCESSO_PEDIDO, tituloClienteLogado);
+			this.menuInicial();
 			break;
 		default:
-			this.menuRestaurante();
+			MenuController.exibeMensagemErro(Mensagem.ERRO_FORMA_PAGAMENTO, tituloClienteLogado);
+			this.menuFormaPagamento(pedido);
 			break;
 		}
+	}
+	
+	private void menuTroco() {
+		
+	}
+	
+	private void menuDuplicarPedido(Cliente cliente) {
+		
 	}
 	
 	/**
@@ -194,6 +266,11 @@ public class PracaAlimentacaoController {
 			this.menuAdministrador();
 			break;
 		}
+	}
+	
+	private void menuRestaurante() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
