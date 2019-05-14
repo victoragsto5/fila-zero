@@ -1,7 +1,5 @@
 package br.edu.up.model;
 
-import java.math.BigDecimal;
-
 public class Produto {
 
 	private Integer codigo;

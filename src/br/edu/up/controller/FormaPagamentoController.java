@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.edu.up.model.FormaPagamento;
 import br.edu.up.model.Pedido;
+import br.edu.up.swing.Opcoes;
 
 public class FormaPagamentoController {
 	
@@ -40,12 +41,18 @@ public class FormaPagamentoController {
 	public String[] getOpcoesPagamento(Pedido pedido) {
 		List<String> listaOpcoes = new ArrayList<String>();
 		
-		listaOpcoes.add("[VALOR TOTAL: " + pedido.getValorTotal() + "]");
+		listaOpcoes.add(Opcoes.SEPARADOR);
+		listaOpcoes.add("FORMA DE PAGAMENTO");
+		listaOpcoes.add(Opcoes.SEPARADOR);
 		
 		for(FormaPagamento formaPagamento : this.formasPagamento) {
 			String opcao = this.getOpcaoPagamento(formaPagamento);
 			listaOpcoes.add(opcao); 
 		}
+		
+		listaOpcoes.add(Opcoes.SEPARADOR);
+		listaOpcoes.add("VALOR TOTAL: " + pedido.getValorTotal() + "");
+		listaOpcoes.add(Opcoes.SEPARADOR);
 		
 		String[] arrayOpcoes =  listaOpcoes.toArray(new String[0]);
 		

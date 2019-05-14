@@ -1,9 +1,8 @@
 package br.edu.up.controller;
 
-import java.util.Date;
-
 import javax.swing.JOptionPane;
 
+import br.edu.up.model.Administrador;
 import br.edu.up.model.Cliente;
 import br.edu.up.model.Pedido;
 import br.edu.up.model.Produto;
@@ -16,12 +15,14 @@ public class PracaAlimentacaoController {
 
 	private RestauranteController restauranteController;
 	private ClienteController clienteController;
-	private FormaPagamentoController formaPagamentoController ;
+	private FormaPagamentoController formaPagamentoController;
+	private AdministradorController administradorController;
 
 	public PracaAlimentacaoController() {
 		this.clienteController = new ClienteController();
 		this.restauranteController = new RestauranteController();
 		this.formaPagamentoController = new FormaPagamentoController();
+		this.administradorController = new AdministradorController();
 	}
 
 	public void iniciarSistema() {
@@ -66,7 +67,11 @@ public class PracaAlimentacaoController {
 		case "2":
 			this.menuNovoCliente();
 			break;
+		case "0":
+			this.menuInicial();
+			break;
 		default:
+			MenuController.exibeMensagemErro(Mensagem.ERRO_OPCAO_INVALIDA, Titulo.CLIENTE);
 			this.menuInicialCliente();
 			break;
 		}
@@ -148,18 +153,22 @@ public class PracaAlimentacaoController {
 
 		switch (opcaoEscolhida) {
 		case "1":
-			this.menuPedidoRestaurante(cliente);
+			this.menuPedidoCliente(cliente);
 			break;
 		case "2":
 			this.menuAlterarCliente(cliente);
 			break;
+		case "0":
+			this.menuInicial();
+			break;
 		default:
+			MenuController.exibeMensagemErro(Mensagem.ERRO_OPCAO_INVALIDA, Titulo.CLIENTE);
 			this.menuClienteLogado(cliente);
 			break;
 		}
 	}
 
-	private void menuPedidoRestaurante(Cliente cliente) {
+	private void menuPedidoCliente(Cliente cliente) {
 		
 		String tituloClienteLogado = Titulo.CLIENTE + ": " + cliente.getNome();
 		String[] opcoes = restauranteController.getOpcoesRestaurante();
@@ -174,7 +183,7 @@ public class PracaAlimentacaoController {
 			this.menuCardapio(pedido);
 		} else {
 			MenuController.exibeMensagemErro(Mensagem.ERRO_BUSCAR_RESTAURANTE, tituloClienteLogado);
-			this.menuPedidoRestaurante(cliente);
+			this.menuPedidoCliente(cliente);
 		} 
 		
 	}
@@ -222,13 +231,15 @@ public class PracaAlimentacaoController {
 		
 		switch (opcaoEscolhida) {
 		case "1":			
+			this.administradorController.receberPedido(pedido);
 			this.restauranteController.receberPedido(pedido);
-			MenuController.exibeMensagemInformacao(Mensagem.SUCESSO_PEDIDO, tituloClienteLogado);			
+			MenuController.exibeMensagemInformacao(Mensagem.SUCESSO_REALIZACAO_PEDIDO, tituloClienteLogado);			
 			this.menuInicial();
 			break;
 		case "2":
+			this.administradorController.receberPedido(pedido);
 			this.restauranteController.receberPedido(pedido);
-			MenuController.exibeMensagemInformacao(Mensagem.SUCESSO_PEDIDO, tituloClienteLogado);
+			MenuController.exibeMensagemInformacao(Mensagem.SUCESSO_REALIZACAO_PEDIDO, tituloClienteLogado);
 			this.menuInicial();
 			break;
 		default:
@@ -238,13 +249,13 @@ public class PracaAlimentacaoController {
 		}
 	}
 	
-	private void menuTroco() {
-		
-	}
-	
-	private void menuDuplicarPedido(Cliente cliente) {
-		
-	}
+//	private void menuTroco() {
+//		
+//	}
+//	
+//	private void menuDuplicarPedido(Cliente cliente) {
+//		
+//	}
 	
 	/**
 	 * ######################################################################
@@ -253,20 +264,128 @@ public class PracaAlimentacaoController {
 	 */
 	private void menuAdministrador() {
 		
-		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_ADMINISTRADOR, Titulo.ADMINISTRADOR);
-		
-		switch (opcaoEscolhida) {
-		case "1":
-			Mensagem.mensagemLog("EXIBIR MENU ADMINISTRADOR");
-			break;
-		default:
-			this.menuAdministrador();
-			break;
+		String login = MenuController.entradaDados("Login Administrador", Titulo.ADMINISTRADOR);
+		String senha = MenuController.entradaDados("Senha Administrador:", Titulo.ADMINISTRADOR);
+
+		Administrador administradorLogado = this.administradorController.loginAdministrador(login, senha);
+
+		if (administradorLogado != null) {
+			this.menuAdministradorLogado(administradorLogado);
+		} else {
+			MenuController.exibeMensagemErro(Mensagem.ERRO_LOGIN_ADMINISTRADOR, Titulo.ADMINISTRADOR);
+			this.menuInicial();
 		}
 	}
 	
+	private void menuAdministradorLogado(Administrador administradorLogado) {
+		
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_ADMINISTRADOR, Titulo.ADMINISTRADOR);
+		
+		switch (opcaoEscolhida) {
+		case "1":			
+			this.menuPedidosAdministrador(administradorLogado);
+			break;
+		case "0":			
+			this.menuInicial();
+			break;
+		default:
+			MenuController.exibeMensagemErro(Mensagem.ERRO_OPCAO_INVALIDA, Titulo.ADMINISTRADOR);
+			this.menuAdministradorLogado(administradorLogado);
+			break;
+		}
+		
+	}
+	
+	private void menuPedidosAdministrador(Administrador administrador) {
+		String[] opcoes = this.administradorController.getOpcoesPedidos();
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(opcoes, Titulo.ADMINISTRADOR);
+		
+		switch (opcaoEscolhida) {
+		case "0":			
+			this.menuAdministradorLogado(administrador);
+			break;
+		default:
+			MenuController.exibeMensagemErro(Mensagem.ERRO_OPCAO_INVALIDA, Titulo.ADMINISTRADOR);
+			this.menuAdministradorLogado(administrador);
+			break;
+		}
+	}
+
 	private void menuRestaurante() {
-		// TODO Auto-generated method stub
+	
+		String codigo = MenuController.entradaDados("Informe o Código Restaurante", Titulo.RESTAURANTE);
+
+		Restaurante restaurante = this.restauranteController.buscaRestaurantePorCodigo(codigo);
+
+		if (restaurante != null) {
+			this.menuInicialRestaurante(restaurante);
+		} else {
+			MenuController.exibeMensagemErro(Mensagem.ERRO_CODIGO_RESTAURANTE, Titulo.RESTAURANTE);
+			this.menuInicial();
+		}
+	}
+
+	private void menuInicialRestaurante(Restaurante restaurante) {
+		
+		String tituloRestaurante = Titulo.RESTAURANTE + ": " + restaurante.getNome();
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(Opcoes.MENU_RESTAURANTE, tituloRestaurante);
+
+		switch (opcaoEscolhida) {
+		case "1":
+			this.menuPedidosRestaurante(restaurante);
+			break;
+		case "2":
+			this.menuEntregarPedido(restaurante);
+			break;
+		case "0":
+			this.menuInicial();
+			break;
+		default:
+			MenuController.exibeMensagemErro(Mensagem.ERRO_OPCAO_INVALIDA, Titulo.RESTAURANTE);
+			this.menuInicialRestaurante(restaurante);
+			break;
+		}
+		
+	}
+
+	private void menuEntregarPedido(Restaurante restaurante) {
+
+		String tituloRestaurante = Titulo.RESTAURANTE + ": " + restaurante.getNome();
+		String[] opcoes = this.restauranteController.getOpcoesPedidos(restaurante);
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(opcoes, tituloRestaurante);
+		
+		Pedido pedidoEntregue = this.restauranteController.entregarPedido(restaurante, opcaoEscolhida);
+		
+		if(pedidoEntregue != null) {
+			this.administradorController.entregarPedido(opcaoEscolhida);
+			MenuController.exibeMensagemInformacao("Pedido: " + pedidoEntregue.getCodigo() + 
+					"\nCliente: " + pedidoEntregue.getCliente().getNome() + 
+					"\n" + Mensagem.SUCESSO_ENTREGA_PEDIDO , tituloRestaurante);
+			this.menuInicialRestaurante(restaurante);
+		} else {
+			MenuController.exibeMensagemErro(Mensagem.ERRO_ENTREGA_PEDIDO, tituloRestaurante);
+			this.menuInicialRestaurante(restaurante);
+		}
+
+		
+		
+	}
+
+	private void menuPedidosRestaurante(Restaurante restaurante) {
+		
+		String tituloRestaurante = Titulo.RESTAURANTE + ": " + restaurante.getNome();
+		String[] opcoes = this.restauranteController.getOpcoesPedidos(restaurante);
+		String opcaoEscolhida = MenuController.entradaDadosComOpcoes(opcoes, tituloRestaurante);
+		
+		switch (opcaoEscolhida) {
+		case "0":
+			this.menuInicialRestaurante(restaurante);
+			break;
+		default:
+			MenuController.exibeMensagemErro(Mensagem.ERRO_OPCAO_INVALIDA, tituloRestaurante);
+			this.menuInicialRestaurante(restaurante);
+			break;
+		}
 		
 	}
 

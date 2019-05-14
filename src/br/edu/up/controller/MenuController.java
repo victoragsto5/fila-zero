@@ -1,8 +1,5 @@
 package br.edu.up.controller;
 
-import java.awt.Component;
-
-import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 public class MenuController {
@@ -17,7 +14,6 @@ public class MenuController {
 	}
 	
 	public static String entradaDadosPreenchidos(String opcoes, String titulo, String valorInicial) {
-		//return JOptionPane.showInputDialog(null, opcoes, titulo, JOptionPane.QUESTION_MESSAGE, null, null, null, "Teste");
 		return (String) JOptionPane.showInputDialog(null, opcoes, titulo, JOptionPane.QUESTION_MESSAGE, null, null, valorInicial);
 	}
 

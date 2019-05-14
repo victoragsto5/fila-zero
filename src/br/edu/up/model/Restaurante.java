@@ -9,9 +9,11 @@ public class Restaurante {
 	private String nome;
 	private List<Produto> cardapio;
 	private List<Pedido> pedidos;
+	private List<Pedido> pedidosEntregues;
 	
 	public Restaurante() {
 		this.pedidos = new ArrayList<Pedido>();
+		this.pedidosEntregues = new ArrayList<Pedido>();
 	}
 
 	public List<Pedido> getPedidos() {
@@ -44,6 +46,14 @@ public class Restaurante {
 
 	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
+	}
+
+	public List<Pedido> getPedidosEntregues() {
+		return pedidosEntregues;
+	}
+
+	public void setPedidosEntregues(List<Pedido> pedidosEntregues) {
+		this.pedidosEntregues = pedidosEntregues;
 	}
 
 }

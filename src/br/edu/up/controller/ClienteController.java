@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.up.model.Cliente;
-import br.edu.up.swing.Mensagem;
 
 public class ClienteController {
 	
@@ -17,12 +16,10 @@ public class ClienteController {
 	
 	public void cadastrar(Cliente cliente) {
 		if(cliente.getId() == null) {
-			Mensagem.mensagemLog("CADASTRAR CLIENTE");
 			Integer idCliente = this.clientesCadastrados.size() + 1;
 			cliente.setId(idCliente);
 			this.clientesCadastrados.add(cliente);
 		} else {
-			Mensagem.mensagemLog("ALTERAR CLIENTE");
 			Integer indice = cliente.getId() - 1;
 			this.clientesCadastrados.set(indice, cliente);
 		}
