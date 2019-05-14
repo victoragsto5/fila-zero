@@ -357,7 +357,7 @@ public class PracaAlimentacaoController {
 		Pedido pedidoEntregue = this.restauranteController.entregarPedido(restaurante, opcaoEscolhida);
 		
 		if(pedidoEntregue != null) {
-			this.administradorController.entregarPedido(opcaoEscolhida);
+			// this.administradorController.entregarPedido(opcaoEscolhida);
 			MenuController.exibeMensagemInformacao("Pedido: " + pedidoEntregue.getCodigo() + 
 					"\nCliente: " + pedidoEntregue.getCliente().getNome() + 
 					"\n" + Mensagem.SUCESSO_ENTREGA_PEDIDO , tituloRestaurante);
