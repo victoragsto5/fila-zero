@@ -101,7 +101,7 @@ public class PracaAlimentacaoController {
 		String login = MenuController.entradaDados("Informe um Login:", Titulo.CLIENTE);
 		String senha = MenuController.entradaDados("Informe uma Senha:", Titulo.CLIENTE);
 		
-		Cliente clienteCadastrado = this.clienteController.buscarPorLoginSenha(login, senha);
+		Cliente clienteCadastrado = this.clienteController.buscarPorLogin(login);
 		
 		if(clienteCadastrado == null) {
 			Cliente cliente = new Cliente(nome, rg, cpf, endereco, telefone, login, senha);
